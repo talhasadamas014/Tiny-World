@@ -1,0 +1,6 @@
+{
+  "name": "Tiny World: Dewdrop",
+  "description": "A macro-scale mobile-first platformer where you play as a 3mm forest sprite leaping across dewdrops, bottle caps, mushrooms, and antique clockwork.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

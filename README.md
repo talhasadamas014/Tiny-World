@@ -1,40 +1,96 @@
-Tiny World
+# Tiny World: Dewdrop
 
-Coder’s Cup ‘26 · Mobile Game Development Competition
+**Tiny World: Dewdrop** is a mobile-first 2D macro-scale platformer created for **Game Jam 2026** (Theme: **TINY WORLD**).  
+Play as **Pip**, a 3-millimeter forest sprite wearing an acorn beret and a mossy leaf cloak, exploring a miniature garden microcosm where ordinary objects tower like ancient monuments.
 
-Team: Level Up Five
-Members: Bazil, Talha, Rasub, Hassan, Muavia
-Engine: Unity (managed through Unity Hub)
-Platform: Android (APK)
+---
 
-Overview
+## Core Gameplay & Tiny World Mechanics
 
-Tiny World is a mobile game in which the player explores a small floating island, collects glowing crystals, and avoids hazards before time runs out. Built for short sessions on a phone, it pairs simple touch controls with a clear goal and rising difficulty, so it is easy to learn and hard to put down.
+- **Surface-Tension Bounce Pads**: Morning dewdrops, crimped bottle caps, and red toadstools launch Pip high into the air. Hold Jump on impact for extra rebound height.
+- **Dandelion Seed Glide**: Hold **Jump** while airborne to open a fluffy dandelion seed parachute, slowing descent and riding warm **sunbeam**, **mist**, and **steam** updrafts.
+- **Dew-Dash**: Trigger a quick horizontal air dash to cross wide gaps or recover from mistimed leaps. Resets automatically upon landing or bouncing.
+- **Macro Hazards & Creatures**: Stomp patrolling **Ladybugs** and **Clock Beetles** from above to bounce off their shells, and avoid thorny brambles, sticky tree sap, swinging watch pendulums, and telegraphed raindrops.
+- **5 Handcrafted Miniature Biomes**:
+  1. **Morning Leaf** *(Scale 1:300 · Clover Patch)* — Sunlit leaves, bouncy dewdrops, and sunbeam updrafts.
+  2. **Picnic Ruins** *(Scale 1:250 · Blanket Edge)* — Giant matchstick bridges, sugar cubes, and bottle-cap springs.
+  3. **Moss Terrarium** *(Scale 1:200 · Glass Jar)* — Quartz crystals, springy toadstools, and rising mist columns.
+  4. **Raindrop Canopy** *(Scale 1:180 · High Ferns)* — Lotus pads, spider-silk tightropes, and heavy macro raindrops.
+  5. **The Pocket Watch** *(Scale 1:150 · Clockwork Core)* — Spinning brass gears that carry Pip, ticking pendulums, and steam vents.
 
-Theme Interpretation
+---
 
-The event theme was “Tiny World.” We interpreted it literally and visually: the entire game takes place on one miniature island, and the player’s character is small compared to the world around them. Every level fits on a single phone screen, so the whole world is always in view. The small space makes each move matter, since there is little room for mistakes.
+## Controls
 
-Gameplay
-Objective: Collect all the crystals on the island while avoiding obstacles and hazards, then reach the exit portal before the timer ends.
-Core loop: Move → Collect crystals → Avoid hazards → Reach the exit → Next level
-Progression: Each level adds more hazards and less time. Score is based on crystals collected and time remaining.
-Win / Lose: The player wins a level by collecting every crystal and reaching the exit. They lose by touching a hazard or running out of time, then can retry immediately.
-Controls
-Virtual joystick (left side of screen): Move the character in any direction.
-Jump button (right side of screen): Jump over obstacles and gaps.
-Pause button (top corner): Pause, resume, or restart the level.
+### Mobile Touchscreen
+- **Left Thumb**: Drag the virtual analog thumbstick to move left/right.
+- **Right Thumb**: Tap **Jump** to leap; **hold Jump** in mid-air to glide with the dandelion parachute; tap **Dash** for an air burst.
+- On-screen touch controls automatically appear on touch/mobile devices and can also be toggled anytime using the gamepad icon in the top HUD.
 
-All controls sit within thumb reach for comfortable play in portrait or landscape.
+### Desktop Keyboard
+- **Move**: `A` / `D` or `Arrow Left` / `Arrow Right`
+- **Jump & Glide**: `Space`, `W`, or `Arrow Up` (hold while falling to glide)
+- **Dew-Dash**: `Shift`, `K`, or `X`
+- **Pause**: `Esc` or `P`
 
-Key Features
-Touch controls designed for easy, responsive play on a phone
-Compact levels that suit the “Tiny World” theme
-Increasing difficulty across levels
-Score and timer system for replay value
-Sound effects and background music
-Lightweight build that runs smoothly on most Android devices
-Credits and Declarations
-Assets: Unity default templates and standard assets. Additional free sprites, sounds, and fonts were imported from [source names, e.g., Kenney.nl, OpenGameArt, Google Fonts]. All remain the property of their respective creators and are used under their free licenses.
-Code: All gameplay scripts were written by the team during the 90-minute competition session.
-AI Use Declaration: AI tools were used for [code assistance / debugging / documentation drafting]. The concept, design, and implementation of the game were the team’s own.
+---
+
+## Mobile App Support (PWA)
+
+The web application is configured as an installable **Progressive Web App (PWA)** with full offline caching via `vite-plugin-pwa`:
+- **Android (Chrome / Edge)**: Tap **Install Mobile App** on the title screen (or **Add to Home Screen** in the browser menu) to run fullscreen without browser chrome and play offline.
+- **iOS (Safari)**: Tap **Install on iOS** on the title screen for guided **Share → Add to Home Screen** steps.
+- **Offline Play**: Service Worker precaches the game engine, fonts, and icons so all 5 stages and saved progress work offline.
+
+---
+
+## C# / Unity Implementation (`unity-csharp/`)
+
+All game systems, physics, audio synthesis, mobile touch controls, and all 5 levels have been converted into idiomatic **Unity C#** under `unity-csharp/Assets/Scripts/`:
+
+| C# Script | Responsibility |
+| :--- | :--- |
+| `TinyWorldTypes.cs` | Enums (`BiomeId`, `PlatformKind`, `HazardKind`, `CollectibleKind`) and serializable stage/save data classes. |
+| `PlayerController2D.cs` | `Rigidbody2D` platformer physics, coyote time (`0.11s`), jump buffering (`0.13s`), dandelion glide, updraft lift, Dew-Dash, moving gear carry, and squash-and-stretch. |
+| `WorldEntities.cs` | `MovingOrRotatingPlatform`, `BouncePadTrigger`, `UpdraftZone`, `PatrolBeetle`, `HazardBehaviour` (bramble/sap/pendulum/raindrop), `CollectiblePickup`, and `GoalBeacon`. |
+| `StageCatalog.cs` | Complete C# definitions for all 5 Tiny World stages scaled to Unity world coordinates. |
+| `SoundManager.cs` | Procedural `AudioClip.Create` synthesizer for jump, bounce, dash, ascending pentatonic pollen chimes, relic fanfare, stage clear, and kalimba background music. |
+| `MobileTouchInput.cs` | `IPointerDownHandler` / `IDragHandler` / `IPointerUpHandler` virtual thumbstick and touch Jump/Dash controls unified with keyboard input. |
+| `GameManager.cs` | Runtime stage builder, smooth camera follow, HUD & screen state machine, and `PlayerPrefs` JSON save persistence. |
+
+---
+
+## How to Build the Android APK
+
+> **Note:** Compiling a signed binary `.apk` requires the Android SDK, OpenJDK, and Gradle (or Unity Editor with Android Build Support), which are not present in the browser preview sandbox. Use either workflow below on your local machine to generate the `.apk`.
+
+### Option A: Build APK in Unity (Recommended for Game Jam 2026)
+1. Install **Unity Hub** and **Unity 2022.3 LTS / Unity 6** with **Android Build Support**, **Android SDK & NDK Tools**, and **OpenJDK** checked.
+2. Create a new **2D (URP or Built-in)** Unity project.
+3. Copy the entire `unity-csharp/Assets/Scripts/` folder into your Unity project's `Assets/Scripts/` directory.
+4. Create a Layer named `Ground` (in *Edit → Project Settings → Tags and Layers*) and assign it to the scene or let `GameManager` build the stage dynamically.
+5. Attach `GameManager` and `SoundManager` to an empty GameObject in your main scene, assign your `Camera.main`, and hook up your UI Canvas panels & `MobileTouchInput`.
+6. Open **File → Build Profiles** (or **Build Settings**), switch platform to **Android**, set **Default Orientation** to Landscape or Auto Rotation in *Player Settings*, and click **Build** to export `TinyWorld.apk`.
+
+### Option B: Package the Web PWA directly as an Android APK (Bubblewrap TWA)
+If you want to wrap the deployed PWA directly into an Android `.apk`:
+```bash
+npm install -g @bubblewrap/cli
+bubblewrap init --manifest https://<your-deployed-app-url>/manifest.webmanifest
+bubblewrap build
+```
+This outputs `app-release-signed.apk` ready for installation on Android devices.
+
+---
+
+## Running the Web App Locally
+
+```bash
+npm install
+npm run dev
+```
+
+Production build:
+```bash
+npm run build
+```
